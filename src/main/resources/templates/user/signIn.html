@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/defaultLayout}">
+<section layout:fragment="content" class="contents d-flex justify-content-center">
+	<div class="shadow-box m-5">
+		<div class="d-flex justify-content-center m-5">
+			
+			<!-- 키보드 Enter키로 로그인이 될 수 있도록 form 태그를 만들어준다.(submit 타입의 버튼이 동작됨) -->
+			<form id="loginForm" action="/user/sign-in" method="post">
+				<div class="input-group mb-3">
+					<div class="input-group-prepend">
+						<span class="input-group-text">ID</span>
+					</div>
+					<input type="text" class="form-control" name="loginId">
+				</div>
+				
+				<div class="input-group mb-3">
+					<div class="input-group-prepend">
+						<span class="input-group-text">PW</span>
+					</div>
+					<input type="password" class="form-control" name="password">
+				</div>
+				
+				<input type="submit" class="btn btn-block btn-info" value="로그인">
+				<a class="btn btn-block btn-dark" href="/user/sign-up-view">회원가입</a>
+			</form>
+		</div>
+	</div>
+</section>
