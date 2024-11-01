@@ -49,6 +49,109 @@ layout:decorate="~{layout/defaultLayout}">
 	
 <th:block layout:fragment="script">
 	<script>
+	$(document).ready(function() {
+		// 중복확인
+		$("#loginIdCheckBtn").on('click', function() {
+			// 문구 안 보이게 초기화
+			$("#idCheckLength").addClass("d-none");
+			$("#idCheckDuplicated").addClass("d-none");
+			$("#idCheckOk").addClass("d-none");
+			
+			//alert("중복확인");
+			let loginId = $("#loginId").val().trim();
+			//alert(loginId);
+			
+			if (loginId.length < 4) {
+				$("#idCheckLength").removeClass("d-none");
+				return;
+			}
+			
+			// AJAX
+			$.ajax({
+				// request
+				url:"/user/is-duplicate-id"
+				, data:{"loginId":loginId}
+				
+				// response
+				, success:function(data) {
+					if (data.is_duplicated_id) { // 중복
+						$("#idCheckDuplicated").removeClass("d-none");
+					} else { // 사용 가능
+						$("#idCheckOk").removeClass("d-none");
+					}
+				}
+				, error:function(error) {
+					alert("중복확인에 실패했습니다.");
+				}
+			});
+		});
+		
+		// 회원가입
+		$("#signUpForm").on('submit', function(e) {
+			e.preventDefault(); // 서브밋 기능 중단
+			
+			//alert("회원가입");
+			// validation
+			let loginId = $("#loginId").val().trim();
+			let password = $("#password").val();
+			let confirmPassword = $("#confirmPassword").val();
+			let name = $("#name").val().trim();
+			let email = $("#email").val().trim();
+			
+			if (!loginId) {
+				alert("아이디를 입력하세요");
+				return false;
+			}
+			
+			if (!password || !confirmPassword) {
+				alert("비밀번호를 입력하세요");
+				return false;
+			}
+			
+			if (password != confirmPassword) {
+				alert("비밀번호가 일치하지 않습니다");
+				return false;
+			}
+			
+			if (!name) {
+				alert("이름을 입력하세요");
+				return false;
+			}
+			
+			if (!email) {
+				alert("이메일을 입력하세요");
+				return false;
+			}
+			
+			// loginId 중복확인 후 사용 가능한지 확인
+			// #idCheckOk d-none이 있을 때 얼럿 띄움
+			if ($("#idCheckOk").hasClass("d-none")) {
+				alert("아이디 중복확인을 해주세요");
+				return false;
+			}
+			
+			// 서버 전송
+			// 1) submit 호출 -> response가 화면(HTML)
+			//$(this)[0].submit(); // 화면 이동
+			
+			// 2) AJAX 호출 -> response가 JSON
+			let url = $(this).attr("action");
+			console.log(url);
+			let params = $(this).serialize(); // 폼태그에 있는 name 속성과 value를 파라미터로 구성
+			console.log(params);
+			
+			$.post(url, params) // request
+			.done(function(data) { // response
+				if (data.code == 200) {
+					alert("가입을 환영합니다. 로그인 해주세요.");
+					// 로그인 화면 이동
+					location.href = "/user/sign-in-view";
+				} else {
+					alert(data.error_message);
+				}
+			});
+		});
+	});
 	</script>
 </th:block>
 </html>
