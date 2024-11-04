@@ -29,3 +29,44 @@
 		</div>
 	</div>
 </section>
+
+<th:block layout:fragment="script">
+    <script>
+    	$(document).ready(function() {
+    		// 로그인 서브밋
+    		$("#loginForm").on('submit', function(e) {
+    			e.preventDefault(); // submit 중단
+    			//alert("로그인");
+    			
+    			// validation
+    			let loginId = $("input[name=loginId]").val().trim();
+    			let password = $("input[name=password]").val();
+    			if (!loginId) {
+    				alert("아이디를 입력하세요.");
+    				return false;
+    			}
+    			if (!password) {
+    				alert("비밀번호를 입력하세요.");
+    				return false;
+    			}
+    			
+    			let url = $(this).attr("action");
+    			console.log(url);
+    			let params = $(this).serialize(); // name 속성 필수
+    			//console.log(params);
+    			
+    			// ajax
+    			$.post(url, params) // request
+    			.done(function(data) { // response - callback
+    				if (data.result == "성공") {
+    					// 로그인 성공 시 타임라인 화면으로 이동
+    					location.href = "/timeline";
+    				} else {
+    					alert(data.error_message);
+    				}
+    			});
+    		});
+    	});
+    
+    </script>
+</th:block>
