@@ -11,7 +11,7 @@
 			<textarea id="writeTextArea" placeholder="내용을 입력해주세요" class="w-100 border-0"></textarea>
 			
 			<div class="d-flex justify-content-between">
-				<div class="file-upload d-flex">
+				<div class="file-upload d-flex align-items-center">
 					<!-- file 태그를 숨겨두고 이미지를 클릭하면 파일을 클릭한 것과 같은 효과를 준다. -->
 					<input type="file" id="file" accept=".jpg, .png, .gif" class="d-none">
 				
@@ -89,6 +89,100 @@
 
 <th:block layout:fragment="script">
     <script>
-
+		$(document).ready(function() {
+			// 이미지 a태그 클릭 => 숨겨져 있는 id="file" 동작 시킨다.
+			$("#fileUploadBtn").on("click", function(e) {
+				e.preventDefault(); // 위로 올라가는 현상 방지
+				//alert("이미지");
+				$("#file").click();
+			});
+			
+			// 파일이 선택될 때   1) 유효성 체크  2) 파일명 노출
+			$("#file").on("input", function(e) {
+				// 취소 누를 때 처리(파일이 비워지므로 name을 뽑다가 에러)
+				if (e.target.files[0] == null) {
+					$("#file").val(""); // 보이진 않지만 파일 태그에 올라온 것 제거
+					$("#fileName").text(""); // 파일명도 초기화
+					return;
+				}
+				
+				//alert("파일 선택");
+				let fileName = e.target.files[0].name;
+				console.log(fileName);
+				
+				// 1) 유효성 체크
+				let ext = fileName.split(".").pop().toLowerCase();
+				console.log(ext);
+				
+				if (ext != "gif" && ext != "png" && ext != "jpg") {
+					alert("이미지 파일만 업로드 할 수 있습니다.");
+					$("#file").val(""); // 보이진 않지만 파일 태그에 올라온 것 제거
+					$("#fileName").text(""); // 파일명도 초기화
+					return;
+				}
+				
+				// 2) 파일명 노출
+				$("#fileName").text(fileName);
+			});
+			
+			// 글쓰기
+			$("#writeBtn").on('click', function() {
+				//alert("게시 버튼");
+				
+				// 내용 비필수
+				let content = $('#writeTextArea').val();
+				console.log(content);
+				
+				// 이미지 필수
+				let file = $('#file').val();
+				if (file == '') {
+					alert('파일을 업로드 해주세요');
+					return;
+				}
+				
+				// 파일이 업로드 된 경우 확장자 체크
+				let ext = file.split('.').pop().toLowerCase(); // 파일 경로를 .으로 나누고 확장자가 있는 마지막 문자열을 가져온 후 모두 소문자로 변경
+				if ($.inArray(ext, ['gif', 'png', 'jpg', 'jpeg']) == -1) {
+					alert("gif, png, jpg, jpeg 파일만 업로드 할 수 있습니다.");
+					$('#file').val(''); // 파일을 비운다.
+					return;
+				}
+				
+				// 폼태그를 자바스크립트에서 만든다.
+				let formData = new FormData();
+				formData.append("content", content);
+				formData.append("file", $('#file')[0].files[0]); // $('#file')[0]은 첫번째 input file 태그를 의미, files[0]는 업로드된 첫번째 파일
+				
+				// AJAX form 데이터 전송
+				$.ajax({
+					// request
+					type: "post"
+					, url: "/post/create"
+					, data: formData
+					, enctype: "multipart/form-data"    // 파일 업로드를 위한 필수 설정
+					, processData: false    // 파일 업로드를 위한 필수 설정
+					, contentType: false    // 파일 업로드를 위한 필수 설정
+					
+					// response
+					, success: function(data) {
+						if (data.code == 200) {
+							location.reload();
+						} else if (data.code == 403) { // 비로그인 일 때
+							location.href = "/user/sign-in-view";
+						} else {
+							alert(data.error_message);
+						}
+					}
+					, error: function(e) {
+						alert("글 저장에 실패했습니다. 관리자에게 문의해주세요.");
+					}
+				});  // --- ajax 끝
+			});
+		});
     </script>
 </th:block>
+
+
+
+
+
