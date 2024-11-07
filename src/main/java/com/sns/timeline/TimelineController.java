@@ -19,9 +19,7 @@ public class TimelineController {
 	@GetMapping("/timeline")
 	public String timeline(Model model) {
 		List<PostEntity> postList = postBO.getPostList();	
-		
 		model.addAttribute("postList", postList);
-			
 		return "timeline/timeline";
 	}
 }
