@@ -44,6 +44,9 @@ public class TimelineBO {
 			// commentBO => commnetDTO list
 			card.setCommentList(commentBO.generateCommentList(postEntity.getId()));
 			
+			// 좋아요 개수
+			
+			
 			//!!!!!! list에 DTO 넣기
 			cardList.add(card);
 		}

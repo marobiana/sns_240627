@@ -46,7 +46,7 @@
 				
 				<!-- 좋아요 -->
 				<div class="card-like m-3">
-					<a href="#" class="like-btn">
+					<a href="#" class="like-btn" th:data-post-id="${card.post.id}">
 						<img src="https://www.iconninja.com/files/214/518/441/heart-icon.png" width="18" height="18" alt="empty heart">
 					</a>
 					<span>좋아요 13개</span>
@@ -229,6 +229,30 @@
 					}
 					, error:function(request, status, error) {
 						alert("댓글 삭제 하는데 실패했습니다.");
+					}
+				});
+			});
+			
+			// like toggle
+			$(".like-btn").on("click", function(e) {
+				e.preventDefault(); // 위로 올라가는 현상 방지
+				let postId = $(this).data("post-id");
+				// alert(postId);
+				
+				$.ajax({
+					url:"/like/" + postId  //   /like/3
+					, success:function(data) {
+						if (data.result == "성공") {
+							// 새로고침 -> 카드를 가져올 때 하트를 채울지 말지가 결정되므로
+							location.reload(true);
+						} else if (data.code == 403) {
+							// 비로그인 => 얼럿 후 로그인 페이지로 이동
+							alert(data.error_message);
+							location.href = "/user/sign-in-view";
+						}
+					}
+					, error:function(e) {
+						alert("좋아요를 하는데 실패했습니다.");
 					}
 				});
 			});
