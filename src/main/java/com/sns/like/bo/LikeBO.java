@@ -27,7 +27,25 @@ public class LikeBO {
 	}
 	
 	// 글에 해당하는 좋아요 개수
+	// input: 글번호     output: 좋아요 개수
+	public int getLikeCountByPostId(int postId) {
+		return likeMapper.selectLikeCountByPostId(postId);
+	}
 	
+	// 좋아요 하트를 채울지 말지 여부
+	// input:글번호, 로그인된사람 or 비로그인(userId)
+	// output:boolean(채운다:true, 비운다:false)
+	public boolean filledLikeByPostIdUserId(int postId, Integer userId) {
+		// 1. 비로그인 => 빈하트
+		if (userId == null) {
+			return false;
+		}
+		
+		// 2. 로그인 => 누른적 없음 빈하트
+		// 3. 로그인 => 누른적 있음 채워진 하트
+		int likeCount = likeMapper.selectLikeCountByPostIdUserId(postId, userId);
+		return likeCount > 0;
+	}
 }
 
 

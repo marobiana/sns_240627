@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.sns.timeline.bo.TimelineBO;
 import com.sns.timeline.domain.CardDTO;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -18,8 +19,9 @@ public class TimelineController {
 	private final TimelineBO timelineBO;
 	
 	@GetMapping("/timeline")
-	public String timeline(Model model) {
-		List<CardDTO> cardList = timelineBO.generateCardList();
+	public String timeline(Model model, HttpSession session) {
+		Integer userId = (Integer)session.getAttribute("userId");
+		List<CardDTO> cardList = timelineBO.generateCardList(userId);
 		model.addAttribute("cardList", cardList);
 		return "timeline/timeline";
 	}

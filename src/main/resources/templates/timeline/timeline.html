@@ -46,10 +46,13 @@
 				
 				<!-- 좋아요 -->
 				<div class="card-like m-3">
-					<a href="#" class="like-btn" th:data-post-id="${card.post.id}">
+					<a th:if="${card.filledLike == false}" href="#" class="like-btn" th:data-post-id="${card.post.id}">
 						<img src="https://www.iconninja.com/files/214/518/441/heart-icon.png" width="18" height="18" alt="empty heart">
 					</a>
-					<span>좋아요 13개</span>
+					<a th:unless="${card.filledLike == false}" href="#" class="like-btn" th:data-post-id="${card.post.id}">
+						<img src="https://www.iconninja.com/files/527/809/128/heart-icon.png" width="18" height="18" alt="filled heart">
+					</a>
+					<span th:text="|좋아요 ${card.likeCount}개|">좋아요 13개</span>
 				</div>
 				
 				<!-- 글 -->
