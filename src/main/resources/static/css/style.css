@@ -1,5 +1,5 @@
 @charset "UTF-8";
-a, a:hover {color:#000;}
+a, a:hover {color:#000; text-decoration:none;}
 
 header {height:80px; background-color:#ededed;}
 .sign-up-box {width:650px; background-color:#ebebeb; margin-top:20px; box-shadow:5px 5px 5px 5px #BDC0C0;}
