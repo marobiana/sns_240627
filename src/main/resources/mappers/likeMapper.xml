@@ -62,6 +62,14 @@
 			`postId` = #{postId}
 			AND `userId` = #{userId}
 	</delete>
+
+	<delete id="deleteLikeListByPostId" parameterType="int">
+		DELETE
+		FROM
+			`like`
+		WHERE
+			`postId` = #{postId}
+	</delete>
 </mapper>
 
 
